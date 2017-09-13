@@ -189,12 +189,4 @@ void vars::Document::Tokenize(std::string& line)
 
 vars::Document::~Document()
 {
-    /*
-    for(auto& item: tokens)
-    {
-        std::cout << "Token: " << std::endl;
-        std::cout << "\t - type:  " << item.Type << std::endl;
-        std::cout << "\t - value: " << item.Value << std::endl;
-    }
-    */
 }

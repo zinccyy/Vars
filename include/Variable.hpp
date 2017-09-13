@@ -52,40 +52,10 @@ namespace vars {
 
         Var operator[](int a)
         {
-            /*for(int i = 0; i < sizeof((int*)Value) / sizeof(int); i++)
-            {
-                std::cout << *((int*)Value + i) << std::endl;
-            }*/
             std::vector<int>* vec = static_cast<std::vector<int>*>(Value);
             Var var(Name, vec->at(a));
             return var;
         }
-
-        /*Var GetValue()
-        {
-            Var v;
-            v.SetName(Name);
-            switch(VarType)
-            {
-                case Int:
-                    v.SetValue(*((int*)Value));
-                    break;
-                case Float:
-                    v.SetValue(*((float*)Value));
-                    break;
-                case Bool:
-                    v.SetValue(*((bool*)Value));
-                    break;
-                case String:
-                    v.SetValue((char*)Value);
-                    break;
-                case IntArray:
-                    
-                    v.SetValue(vec);
-                    break;
-            }
-            return v; 
-        }*/
 
         ~Var();
     private:
