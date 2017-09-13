@@ -41,6 +41,7 @@ namespace vars {
         //arrays
 
         void SetValue(std::vector<int>&);
+        void SetValue(std::vector<float>&);
 
         VariableType GetType()
         { return VarType; }
@@ -52,8 +53,23 @@ namespace vars {
 
         Var operator[](int a)
         {
-            std::vector<int>* vec = static_cast<std::vector<int>*>(Value);
-            Var var(Name, vec->at(a));
+            Var var;
+            var.SetName(Name);
+            switch(VarType)
+            {
+                case IntArray:
+                {
+                    std::vector<int>* vec = static_cast<std::vector<int>*>(Value);
+                    var.SetValue(vec->at(a));
+                    break;
+                }
+                case FloatArray:
+                {
+                    std::vector<float>* vec = static_cast<std::vector<float>*>(Value);
+                    var.SetValue(vec->at(a));
+                    break;
+                }
+            }
             return var;
         }
 

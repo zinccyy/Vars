@@ -28,9 +28,17 @@ vars::Var::Var(const Var& var)
             SetValue((char*)var);
             break;
         case IntArray:
+        {
             std::vector<int>* vec = static_cast<std::vector<int>*>(var.Value);
             SetValue(*vec);
             break;
+        }
+        case FloatArray:
+        {
+            std::vector<float>* vec = static_cast<std::vector<float>*>(var.Value);
+            SetValue(*vec);
+            break;
+        }
     }
 }
 
@@ -182,6 +190,21 @@ void vars::Var::SetValue(std::vector<int>& arr)
         }
 }
 
+void vars::Var::SetValue(std::vector<float>& arr)
+{
+    if(Value == nullptr)
+    {
+        Value = static_cast<void*> (new std::vector<float>(arr));
+        VarType = FloatArray;
+    }   
+    else
+        if(VarType == VariableType::FloatArray) 
+        {
+            delete[] (std::vector<float>*)Value;
+            Value = new std::vector<float>(arr);
+        }
+}
+
 vars::Var::~Var()
 {
     if(Name != nullptr) 
@@ -210,6 +233,10 @@ vars::Var::~Var()
         case IntArray:
             if(Value != nullptr)
                 delete[] (int*)Value;
+            break;
+        case FloatArray:
+            if(Value != nullptr)
+                delete[] (float*)Value;
             break;
     }
     Value = nullptr;

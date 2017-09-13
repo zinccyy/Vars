@@ -74,14 +74,13 @@ void vars::Document::Parse()
                                 arr.push_back(std::stoi(tokens[i].Value));
                             else if(tokens[i].Type == TokenType::DollarSign)
                             {
-                                bool found = false;
-                                for(auto& var: variables) 
+                                for(auto& v: variables) 
                                 {
-                                    if(strcmp(var.GetName(), tokens[i+1].Value.c_str()) == 0)
+                                    if(strcmp(v.GetName(), tokens[i+1].Value.c_str()) == 0)
                                     {
-                                        if(var.GetType() != VariableType::Int)
-                                            std::cout << "Error -> not the same data type when adding variable '" << var.GetName() << "' to an array '" << name << "'!\n";
-                                        else arr.push_back((int)var);
+                                        if(v.GetType() != VariableType::Int)
+                                            std::cout << "Error -> not the same data type when adding variable '" << v.GetName() << "' to an array '" << var.GetName() << "'!\n";
+                                        else arr.push_back((int)v);
                                     }
                                 }     
                             }
@@ -91,7 +90,32 @@ void vars::Document::Parse()
                         break;
                     }
                     case TokenType::Float:
+                    {
+                        std::vector<float> arr;
+                        for(i += 2; tokens[i].Type != RBracket; i++)
+                        {
+                            if(tokens[i].Type == TokenType::Comma) continue;
+
+                            else if(tokens[i].Type == TokenType::Float)
+                                arr.push_back(std::stof(tokens[i].Value));
+
+                            else if(tokens[i].Type == TokenType::DollarSign)
+                            {
+                                for(auto& v: variables) 
+                                {
+                                    if(strcmp(v.GetName(), tokens[i+1].Value.c_str()) == 0)
+                                    {
+                                        if(v.GetType() != VariableType::Float)
+                                            std::cout << "Error -> not the same data type when adding variable '" << v.GetName() << "' to an array '" << var.GetName() << "'!\n";
+                                        else arr.push_back((float)v);
+                                    }
+                                }     
+                            }
+                        }
+                        var.SetValue(arr);
+                        variables.push_back(var);
                         break;
+                    }
                     case TokenType::Bool:
                         break;
                     case TokenType::String:
@@ -189,4 +213,12 @@ void vars::Document::Tokenize(std::string& line)
 
 vars::Document::~Document()
 {
+    /*
+    for(auto& item: tokens)
+    {
+        std::cout << "Token: " << std::endl;
+        std::cout << "\t - type:  " << item.Type << std::endl;
+        std::cout << "\t - value: " << item.Value << std::endl;
+    }
+    */
 }
