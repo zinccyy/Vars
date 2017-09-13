@@ -32,6 +32,8 @@ bool vars::Document::LoadFile(const char* filename)
 void vars::Document::Parse()
 {
     vars::Var var;
+    std::string name;
+
     for(int i = 0; i < tokens.size(); i++)
     {
         if(tokens[i].Type == TokenType::Colon) {
@@ -57,6 +59,45 @@ void vars::Document::Parse()
                 }
                 variables.push_back(var);
             }
+            else
+            {
+                switch(tokens[i+2].Type) // arrays
+                {
+                    case TokenType::Int:
+                    {
+                        std::vector<int> arr;
+                        for(i += 2; tokens[i].Type != RBracket; i++)
+                        {
+                            if(tokens[i].Type == TokenType::Comma) continue;
+
+                            else if(tokens[i].Type == TokenType::Int)
+                                arr.push_back(std::stoi(tokens[i].Value));
+                            else if(tokens[i].Type == TokenType::DollarSign)
+                            {
+                                bool found = false;
+                                for(auto& var: variables) 
+                                {
+                                    if(strcmp(var.GetName(), tokens[i+1].Value.c_str()) == 0)
+                                    {
+                                        if(var.GetType() != VariableType::Int)
+                                            std::cout << "Error -> not the same data type when adding variable '" << var.GetName() << "' to an array '" << name << "'!\n";
+                                        else arr.push_back((int)var);
+                                    }
+                                }     
+                            }
+                        }
+                        var.SetValue(arr);
+                        variables.push_back(var);
+                        break;
+                    }
+                    case TokenType::Float:
+                        break;
+                    case TokenType::Bool:
+                        break;
+                    case TokenType::String:
+                        break;
+                }
+            }
         }
     }
 
@@ -79,7 +120,7 @@ void vars::Document::Parse()
                 break;
         }
         std::cout << std::endl;
-    } --> outputting variables */
+    } */
 }
 
 void vars::Document::Tokenize(std::string& line)

@@ -12,7 +12,12 @@ namespace vars {
         Int,
         Float,
         Bool,
-        String
+        String,
+
+        IntArray,
+        FloatArray,
+        BoolArray,
+        StringArray
     };
 
     class Var
@@ -33,6 +38,10 @@ namespace vars {
         void SetValue(bool);
         void SetValue(const char*);
 
+        //arrays
+
+        void SetValue(std::vector<int>&);
+
         VariableType GetType()
         { return VarType; }
 
@@ -41,7 +50,18 @@ namespace vars {
         operator bool() const { return *((bool*)Value); }
         operator char*() const { return (char*)Value; }
 
-        Var GetValue()
+        Var operator[](int a)
+        {
+            /*for(int i = 0; i < sizeof((int*)Value) / sizeof(int); i++)
+            {
+                std::cout << *((int*)Value + i) << std::endl;
+            }*/
+            std::vector<int>* vec = static_cast<std::vector<int>*>(Value);
+            Var var(Name, vec->at(a));
+            return var;
+        }
+
+        /*Var GetValue()
         {
             Var v;
             v.SetName(Name);
@@ -59,9 +79,13 @@ namespace vars {
                 case String:
                     v.SetValue((char*)Value);
                     break;
+                case IntArray:
+                    
+                    v.SetValue(vec);
+                    break;
             }
             return v; 
-        }
+        }*/
 
         ~Var();
     private:
