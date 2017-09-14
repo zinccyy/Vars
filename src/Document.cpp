@@ -50,7 +50,8 @@ void vars::Document::Parse()
                         var.SetValue(std::stof(tokens[i+1].Value));
                         break;
                     case TokenType::Bool:
-                        if(tokens[i].Value == "true") var.SetValue(true);
+                        if(tokens[i+1].Value == "true")
+                            var.SetValue(true);
                         else var.SetValue(false);
                         break;
                     case TokenType::String:
@@ -81,6 +82,7 @@ void vars::Document::Parse()
                                         if(v.GetType() != VariableType::Int)
                                             std::cout << "Error -> not the same data type when adding variable '" << v.GetName() << "' to an array '" << var.GetName() << "'!\n";
                                         else arr.push_back((int)v);
+                                        break;
                                     }
                                 }     
                             }
@@ -96,7 +98,7 @@ void vars::Document::Parse()
                         {
                             if(tokens[i].Type == TokenType::Comma) continue;
 
-                            else if(tokens[i].Type == TokenType::Float)
+                            else if(tokens[i].Type == TokenType::Float || tokens[i].Type == TokenType::Int)
                                 arr.push_back(std::stof(tokens[i].Value));
 
                             else if(tokens[i].Type == TokenType::DollarSign)
@@ -108,6 +110,7 @@ void vars::Document::Parse()
                                         if(v.GetType() != VariableType::Float)
                                             std::cout << "Error -> not the same data type when adding variable '" << v.GetName() << "' to an array '" << var.GetName() << "'!\n";
                                         else arr.push_back((float)v);
+                                        break;
                                     }
                                 }     
                             }
@@ -117,7 +120,38 @@ void vars::Document::Parse()
                         break;
                     }
                     case TokenType::Bool:
+                    {
+                        std::vector<bool> arr;
+                        for(i += 2; tokens[i].Type != RBracket; i++)
+                        {
+                            if(tokens[i].Type == TokenType::Comma) continue;
+
+                            else if(tokens[i].Type == TokenType::Bool)
+                            {
+                                if(tokens[i].Value == "true")
+                                    arr.push_back(true);
+                                else arr.push_back(false);
+                            }
+
+                            else if(tokens[i].Type == TokenType::DollarSign)
+                            {
+                                for(auto& v: variables) 
+                                {
+                                    if(strcmp(v.GetName(), tokens[i+1].Value.c_str()) == 0)
+                                    {
+                                        if(v.GetType() != VariableType::Bool)
+                                            std::cout << "Error -> not the same data type when adding variable '" << v.GetName() << "' to an array '" << var.GetName() << "'!\n";
+                                        else 
+                                            arr.push_back((bool)v);
+                                        break;
+                                    }
+                                }     
+                            }
+                        }
+                        var.SetValue(arr);
+                        variables.push_back(var);
                         break;
+                    }
                     case TokenType::String:
                         break;
                 }
@@ -213,12 +247,4 @@ void vars::Document::Tokenize(std::string& line)
 
 vars::Document::~Document()
 {
-    /*
-    for(auto& item: tokens)
-    {
-        std::cout << "Token: " << std::endl;
-        std::cout << "\t - type:  " << item.Type << std::endl;
-        std::cout << "\t - value: " << item.Value << std::endl;
-    }
-    */
 }

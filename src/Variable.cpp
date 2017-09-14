@@ -39,6 +39,12 @@ vars::Var::Var(const Var& var)
             SetValue(*vec);
             break;
         }
+        case BoolArray:
+        {
+            std::vector<bool>* vec = static_cast<std::vector<bool>*>(var.Value);
+            SetValue(*vec);
+            break;
+        }
     }
 }
 
@@ -205,6 +211,21 @@ void vars::Var::SetValue(std::vector<float>& arr)
         }
 }
 
+void vars::Var::SetValue(std::vector<bool>& arr)
+{
+    if(Value == nullptr)
+    {
+        Value = static_cast<void*> (new std::vector<bool>(arr));
+        VarType = BoolArray;
+    }   
+    else
+        if(VarType == VariableType::BoolArray) 
+        {
+            delete[] (std::vector<bool>*)Value;
+            Value = new std::vector<bool>(arr);
+        }
+}
+
 vars::Var::~Var()
 {
     if(Name != nullptr) 
@@ -232,11 +253,15 @@ vars::Var::~Var()
             break;
         case IntArray:
             if(Value != nullptr)
-                delete[] (int*)Value;
+                delete (std::vector<int>*)Value;
             break;
         case FloatArray:
             if(Value != nullptr)
-                delete[] (float*)Value;
+                delete (std::vector<float>*)Value;
+            break;
+        case BoolArray:
+            if(Value != nullptr)
+                delete (std::vector<bool>*)Value;
             break;
     }
     Value = nullptr;

@@ -9,8 +9,6 @@ int main(int argc, char** argv)
 {
     vars::Document doc(argv[1]);
     vars::Var v = doc["float_var"];
-
-    float a = doc["d"][0];
-    cout << (float)a << endl;
+    cout << (float) doc["d"][2] << endl;
     return 0;
 }

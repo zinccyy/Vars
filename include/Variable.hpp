@@ -42,6 +42,7 @@ namespace vars {
 
         void SetValue(std::vector<int>&);
         void SetValue(std::vector<float>&);
+        void SetValue(std::vector<bool>&);
 
         VariableType GetType()
         { return VarType; }
@@ -66,6 +67,12 @@ namespace vars {
                 case FloatArray:
                 {
                     std::vector<float>* vec = static_cast<std::vector<float>*>(Value);
+                    var.SetValue(vec->at(a));
+                    break;
+                }
+                case BoolArray:
+                {
+                    std::vector<bool>* vec = static_cast<std::vector<bool>*>(Value);
                     var.SetValue(vec->at(a));
                     break;
                 }
