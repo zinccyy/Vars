@@ -3,12 +3,12 @@ Simple variable storing in C++.
 
 ### Include a file
 ```c++
-#include <Vars.hpp>
+#include <Document.hpp>
 ```
 
 ### Example code
 ```c++
-#include <Vars.hpp>
+#include <Document.hpp>
 #include <iostream>
 using namespace std;
 
