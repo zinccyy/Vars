@@ -6,6 +6,7 @@
 #include <vector>
 
 namespace vars {
+
     enum VariableType
     {
         Undef,
@@ -43,6 +44,7 @@ namespace vars {
         void SetValue(std::vector<int>&);
         void SetValue(std::vector<float>&);
         void SetValue(std::vector<bool>&);
+        void SetValue(std::vector<std::string>&);
 
         VariableType GetType()
         { return VarType; }
@@ -76,12 +78,19 @@ namespace vars {
                     var.SetValue(vec->at(a));
                     break;
                 }
+                case StringArray:
+                {
+                    std::vector<std::string>* vec = static_cast<std::vector<std::string>*>(Value);
+                    var.SetValue(vec->at(a).c_str());
+                    break;
+                }
             }
             return var;
         }
-
         ~Var();
+
     private:
+
         char* Name;
         void* Value;
         VariableType VarType;

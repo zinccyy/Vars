@@ -45,6 +45,12 @@ vars::Var::Var(const Var& var)
             SetValue(*vec);
             break;
         }
+        case StringArray:
+        {
+            std::vector<std::string>* vec = static_cast<std::vector<std::string>*>(var.Value);
+            SetValue(*vec);
+            break;
+        }
     }
 }
 
@@ -89,7 +95,6 @@ void vars::Var::SetName(const char* name)
     {
         Name = new char[strlen(name)+1];
         strcpy(Name, name);
-        // all good and sets the Name right -> checked 15 times
     }
     else
     {
@@ -114,6 +119,22 @@ void vars::Var::SetName(const char* name)
             case String:
                 if(Value != nullptr)
                     delete[] (char*)Value;
+                break;
+            case IntArray:
+                if(Value != nullptr)
+                    delete (std::vector<int>*)Value;
+                break;
+            case FloatArray:
+                if(Value != nullptr)
+                    delete (std::vector<float>*)Value;
+                break;
+            case BoolArray:
+                if(Value != nullptr)
+                    delete (std::vector<bool>*)Value;
+                break;
+            case StringArray:
+                if(Value != nullptr)
+                    delete (std::vector<const char*>*)Value;
                 break;
         }
         Value = nullptr;
@@ -191,7 +212,7 @@ void vars::Var::SetValue(std::vector<int>& arr)
     else
         if(VarType == VariableType::IntArray) 
         {
-            delete[] (std::vector<int>*)Value;
+            delete (std::vector<int>*)Value;
             Value = new std::vector<int>(arr);
         }
 }
@@ -206,7 +227,7 @@ void vars::Var::SetValue(std::vector<float>& arr)
     else
         if(VarType == VariableType::FloatArray) 
         {
-            delete[] (std::vector<float>*)Value;
+            delete (std::vector<float>*)Value;
             Value = new std::vector<float>(arr);
         }
 }
@@ -221,8 +242,23 @@ void vars::Var::SetValue(std::vector<bool>& arr)
     else
         if(VarType == VariableType::BoolArray) 
         {
-            delete[] (std::vector<bool>*)Value;
+            delete (std::vector<bool>*)Value;
             Value = new std::vector<bool>(arr);
+        }
+}
+
+void vars::Var::SetValue(std::vector<std::string>& arr)
+{
+    if(Value == nullptr)
+    {
+        Value = static_cast<void*> (new std::vector<std::string>(arr));
+        VarType = StringArray;
+    }   
+    else
+        if(VarType == VariableType::StringArray) 
+        {
+            delete (std::vector<std::string>*)Value;
+            Value = new std::vector<std::string>(arr);
         }
 }
 
@@ -263,7 +299,9 @@ vars::Var::~Var()
             if(Value != nullptr)
                 delete (std::vector<bool>*)Value;
             break;
+        case StringArray:
+            if(Value != nullptr)
+                delete (std::vector<std::string>*)Value;
+            break;
     }
-    Value = nullptr;
-    Name = nullptr;
 }

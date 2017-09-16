@@ -152,13 +152,44 @@ void vars::Document::Parse()
                         variables.push_back(var);
                         break;
                     }
-                    case TokenType::String:
+                    case TokenType::String: // unknown bug, vector<const char*> does not work -> for now using vector<std::string>
+                    {
+                        std::vector<std::string> arr;
+                        std::string str;
+                        for(i += 2; tokens[i].Type != RBracket; i++)
+                        {
+                            if(tokens[i].Type == TokenType::Comma) continue;
+
+                            else if(tokens[i].Type == TokenType::String) {
+                                str = tokens[i].Value.substr(1,tokens[i].Value.size()-2);
+                                //std::cout << tokens[i].Value.substr(1,tokens[i].Value.size()-2).c_str() << std::endl;
+                                arr.push_back(str);
+                            }
+
+                            else if(tokens[i].Type == TokenType::DollarSign)
+                            {
+                                for(auto& v: variables) 
+                                {
+                                    if(strcmp(v.GetName(), tokens[i+1].Value.c_str()) == 0)
+                                    {
+                                        if(v.GetType() != VariableType::String)
+                                            std::cout << "Error -> not the same data type when adding variable '" << v.GetName() << "' to an array '" << var.GetName() << "'!\n";
+                                        else 
+                                            arr.push_back((char*)v);
+                                        break;
+                                    }
+                                }     
+                            }
+                        }
+                        var.SetValue(arr);
+                        variables.push_back(var);
                         break;
+                    }
                 }
             }
         }
     }
-
+    tokens.clear();
     /*for(auto& v : variables)
     {
         std::cout << v.GetName() << " :: ";
