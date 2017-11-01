@@ -14,7 +14,7 @@ using namespace std;
 
 int main()
 {
-    vars::Document doc["file.vars"];
+    vars::Document doc("file.vars");
     float a = doc["float_variable"];
     cout << a << endl;
     return 0;
